@@ -8,11 +8,12 @@ MODULE_DESCRIPTION("Basic read and write loadable module in /proc directory");
 
 static struct proc_dir_entry *my_proc_dir_entry;
 
+char msg[128];  // fixed safe buffer
+
 static ssize_t my_read(struct file *file_pointer, char *user_space_buffer, size_t count, loff_t *offset)
 {
     printk("my_read\n");
 
-    char msg[] = "Ack\n";
     size_t len = strlen(msg);
     int result;
     if (*offset >= len) // Becaasue cat command needs eod
@@ -24,9 +25,28 @@ static ssize_t my_read(struct file *file_pointer, char *user_space_buffer, size_
     return len;
 }
 
+static ssize_t my_write(struct file *file_pointer, const char *user_space_buffer, size_t count, loff_t *offset)
+{
+    printk("my_write\n");
+    size_t to_copy;
+    int result;
+   
+    to_copy = min(count, sizeof(msg) - 1);
+    result = copy_from_user(msg, user_space_buffer, to_copy);
+    if (result != 0)
+    {
+        return -EFAULT;
+    }
+    msg[to_copy] = '\0'; 
+    printk("Received from user: %s\n", msg);
+    *offset += to_copy;
+    return to_copy;
+}
+
 struct proc_ops my_proc_ops = {
 
-    .proc_read = my_read
+    .proc_read = my_read,
+    .proc_write = my_write
 
 };
 
