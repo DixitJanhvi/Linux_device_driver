@@ -58,4 +58,31 @@ sudo rmmod proc_ldd
 dmesg | tail
 ls /proc/my_module   # should be removed
 
-2. 
+2. Read/Write Behavior of the /proc File
+
+A. Read (my_read)
+
+The read() function only returns data until the end of the stored message.
+
+It correctly uses and updates the file offset, which is required for tools like cat to stop at end-of-file (EOF).
+
+Behavior:
+
+First read → returns the message and advances the offset.
+
+Next read → offset ≥ length → returns 0 → EOF.
+
+This prevents repeated data output and ensures compatibility with standard user-space tools.
+
+B. Write (my_write)
+
+The write() function accepts data from user space and stores it inside the kernel buffer.
+
+It copies only as many bytes as fit in the kernel buffer, preventing overflow.
+
+Importantly:
+
+It does not modify the file offset.
+Procfs write operations should always behave like writing to a simple memory region—each write replaces the buffer content directly.
+
+After a successful write, the buffer is NULLs-terminated so the message can be read back safely
