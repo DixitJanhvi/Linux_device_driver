@@ -1,1 +1,0 @@
-savedcmd_/home/janhvi/Desktop/linux_device_driver/Linux_device_driver/proc_ldd.mod := printf '%s\n'   proc_ldd.o | awk '!x[$$0]++ { print("/home/janhvi/Desktop/linux_device_driver/Linux_device_driver/"$$0) }' > /home/janhvi/Desktop/linux_device_driver/Linux_device_driver/proc_ldd.mod

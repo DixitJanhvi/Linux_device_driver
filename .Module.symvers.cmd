@@ -1,1 +1,0 @@
-savedcmd_/home/janhvi/Desktop/linux_device_driver/Linux_device_driver/Module.symvers :=  scripts/mod/modpost -M -m -a      -o /home/janhvi/Desktop/linux_device_driver/Linux_device_driver/Module.symvers -T /home/janhvi/Desktop/linux_device_driver/Linux_device_driver/modules.order -i Module.symvers -e 
